@@ -97,8 +97,10 @@ public class NewMain {
                                     case 2://deletes an account
                                     clearScreen();
                                     JCASH();
+                                    input.nextLine();
                                     System.out.print("Enter account number to delete: ");
                                     accNo = input.nextLine();
+                                    
                                     found = false;
                                     for (int i = 0; i < count; i++) {
                                         if (Integer.parseInt(accNo) == acc[i].getAccountNo()) {
@@ -109,10 +111,12 @@ public class NewMain {
                                                 System.out.println("Account Deleted.");
                                                 System.out.print("\nPress Enter to Continue...");
                                                 input.nextLine();
+                                            
                                             } else {//if the user does not confirm the deletion
                                                 System.out.println("Account not deleted.");
                                                 System.out.print("\nPress Enter to Continue...");
                                                 input.nextLine();
+                                                
                                             }
                                             break;
                                         }
@@ -209,19 +213,22 @@ public class NewMain {
                                             acc[i].viewBalance();//calls the viewBalance method
                                             System.out.print("\nPress Enter to Continue...");
                                             input.nextLine();
+                                            input.nextLine();
                                             break;
                                             case 4:
-                                            
+                                            clearScreen();
                                             JCASH();
                                             currencyConvert(acc[i].getBalance());//calls the currencyConvert method
                                             System.out.print("\nPress Enter to Continue...");
                                             input.nextLine();
+                                            input.nextLine();
                                             break;
                                             case 5://displays the account details
-                                            
+                                            clearScreen();
                                             JCASH();
                                             acc[i].getDetails();//calls the getDetails method
                                             System.out.print("\nPress Enter to Continue...");
+                                            input.nextLine();
                                             input.nextLine();
                                             break;
                                             case 6:

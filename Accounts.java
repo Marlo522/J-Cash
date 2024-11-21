@@ -19,9 +19,9 @@ public abstract class Accounts {
         YoB = 0;
     }
 
-    public void setAccountNo() {
-        Random accountNo = new Random();
-        this.accountNo = accountNo.nextInt(900) + 100; // Generates a random number between 100 and 999
+    
+    public void setAccountNo(int accountNo) {
+        this.accountNo = accountNo;
     }
 
     public void setName(String name) {//a setter method for name

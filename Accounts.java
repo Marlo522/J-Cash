@@ -102,6 +102,9 @@ public abstract class Accounts {
     public int getBalance(){//a getter method for balance
         return this.balance;
     }
+    public int getPin(){//a getter method for pin
+        return this.pin;
+    }
 
     public void deposit(int amount){//method to deposit money to the account
         while(amount < 500){ // Minimum deposit amount is 500

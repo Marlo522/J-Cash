@@ -1,97 +1,94 @@
 import java.util.Random;
 import java.util.Scanner;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-public class Fmain {
+public class Hmain {
     private static final int adminPin = 1234;
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         int count = 0, choice = 0, choice2 = 0, choice3 = 0;
         String finalans = "", accNo;
         boolean found;
-        Accounts acc[] = new Accounts[5];//array of accounts with a maximum of 5 accounts
+        Accounts acc[] = new Accounts[5]; // array of accounts with a maximum of 5 accounts
         count = loadAccounts(acc);
-        do{
+    
+        do {
             clearScreen();
             JCASH();
-            System.out.println("1. Login\n2. Exit\n");  // Main menu, login as an admin first to create accounts
+            System.out.println("1. Login\n2. Exit\n"); // Main menu, login as an admin first to create accounts
             System.out.print("Enter choice: ");
             choice = input.nextInt();
             input.nextLine();
-
-            switch(choice){
+    
+            switch (choice) {
                 case 1:
                     clearScreen();
                     JCASH();
                     System.out.println("LOGIN");
-                    System.out.print("Enter account number\t: ");   //to login as an admin, enter "admin"
+                    System.out.print("Enter account number\t: "); // to login as an admin, enter "admin"
                     accNo = input.nextLine();
-                    found = false;
-
-                    if(accNo.equalsIgnoreCase("admin")){
-                        found = true;
-                        
+    
+                    if (Login(accNo)) {
                         System.out.print("Enter Admin Pin \t: "); // Admin pin is 1234 with 3 attempts, it can be changed above
-                        if(adminAuth(input)){
-                            do{
+                        if (adminAuth(input)) {
+                            do {
                                 clearScreen();
                                 JCASH();
                                 System.out.println("ADMIN MENU");
                                 System.out.println("1. Create Account\n2. Delete Account\n3. View Accounts\n4. Exit\n");
                                 System.out.print("Enter choice: ");
                                 choice2 = input.nextInt();
-
-                                switch(choice2){
-                                    case 1://creates an account
-                                        if(count == 5){
+    
+                                switch (choice2) {
+                                    case 1: // creates an account
+                                        if (count == 5) {
                                             clearScreen();
                                             JCASH();
                                             System.out.println("Maximum number of accounts reached.");
                                             System.out.print("Press Enter to Continue...");
-                                            input.nextLine();//waits for the user to press enter
+                                            input.nextLine(); // waits for the user to press enter
                                             break;
-                                        }
-                                        else{
+                                        } else {
                                             clearScreen();
                                             JCASH();
                                             System.out.println("ACCOUNT CREATION");
                                             System.out.println("1. Savings\n2. Current\n3. Go Back");
                                             System.out.print("\nEnter choice: ");
                                             choice3 = input.nextInt();
-
-                                            switch(choice3){
+    
+                                            switch (choice3) {
                                                 case 1:
                                                     clearScreen();
                                                     JCASH();
                                                     acc[count] = new Savings();
                                                     createAccount(acc[count], input);
-                                                    
                                                     count++;
                                                     saveAccounts(acc, count);
                                                     break;
-
+    
                                                 case 2:
                                                     clearScreen();
                                                     JCASH();
                                                     acc[count] = new Current();
                                                     createAccount(acc[count], input);
-                                                    
                                                     count++;
                                                     saveAccounts(acc, count);
                                                     break;
-
+    
                                                 case 3:
                                                     break;
-
+    
                                                 default:
                                                     System.out.println("Invalid choice.");
                                                     System.out.print("\nPress Enter to Continue...");
                                                     input.nextLine();
                                             }
-                                            if (choice3 < 3) {//if the user chose to create an account
+                                            if (choice3 < 3) { // if the user chose to create an account
                                                 clearScreen();
                                                 JCASH();
                                                 System.out.println("Success!");
@@ -102,67 +99,55 @@ public class Fmain {
                                             }
                                         }
                                         break;
-
-                                    case 2://deletes an account
-                                    clearScreen();
-                                    JCASH();
-                                    input.nextLine();
-                                    System.out.print("Enter account number to delete: ");
-                                    accNo = input.nextLine();
-                                    
-                                    found = false;
-                                    for (int i = 0; i < count; i++) {
-                                        if (Integer.parseInt(accNo) == acc[i].getAccountNo()) {
-                                            found = true;
-                                            if (confirmation(acc[i].getAccountNo(), input)) {//calls the confirmation method
-                                                deleteAccount(acc, i, count);//calls the deleteAccount method
-                                                count--;
-                                                saveAccounts(acc, count);//decrements the count of accounts
-                                                System.out.println("Account Deleted.");
-                                                System.out.print("\nPress Enter to Continue...");
-                                                input.nextLine();
-                                            
-                                            } else {//if the user does not confirm the deletion
-                                                System.out.println("Account not deleted.");
-                                                System.out.print("\nPress Enter to Continue...");
-                                                input.nextLine();
-                                                
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    if (!found) {
-                                        System.out.println("Account not found.");
-                                        System.out.print("\nPress Enter to Continue...");
-                                        input.nextLine();
-                                        break;
-                                    }
-                                    break;
-                                         
-
-                                    case 3://display all accounts
+    
+                                    case 2: // deletes an account
                                         clearScreen();
                                         JCASH();
-                                        if(count == 0){//checks if there are accounts to display
-                                            System.out.println("No accounts to display.\n");
+                                        input.nextLine();
+                                        System.out.print("Enter account number to delete: ");
+                                        accNo = input.nextLine();
+    
+                                        found = false;
+                                        for (int i = 0; i < count; i++) {
+                                            if (AccountLogin(accNo)) {
+                                                found = true;
+                                                if (confirmation(acc[i].getAccountNo(), input)) {
+                                                    DeleteAccount(accNo);
+                                                } else {
+                                                    System.out.println("Account not deleted.");
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                }
+                                                break;
+                                            }
                                         }
-                                        else{//if there are accounts
+                                        if (!found) {
+                                            System.out.println("Account not found.");
+                                            System.out.print("\nPress Enter to Continue...");
+                                            input.nextLine();
+                                        }
+                                        break;
+    
+                                    case 3: // display all accounts
+                                        clearScreen();
+                                        JCASH();
+                                        if (count == 0) { // checks if there are accounts to display
+                                            System.out.println("No accounts to display.\n");
+                                        } else { // if there are accounts
                                             System.out.println("DISPLAY USERS");
-                                            Display(acc, count);//calls the Display method
+                                            Display(); // calls the Display method
                                         }
                                         input.nextLine();
                                         System.out.print("Press Enter to Continue...");
                                         input.nextLine();
                                         break;
-
-                                    case 4://exits the admin menu
-                                    
+    
+                                    case 4: // exits the admin menu
                                         break;
                                 }
-                                        
-                            }while(choice2 != 4);
-                        }
-                        else{
+    
+                            } while (choice2 != 4);
+                        } else {
                             System.out.println("\nAll attempts used. Going back to main menu.");
                             input.nextLine();
                             System.out.print("Press Enter to Continue...");
@@ -170,119 +155,118 @@ public class Fmain {
                             break;
                         }
                     }
-                    else{
-                        for(int i = 0; i < count; i++){
-                            if(Integer.parseInt(accNo) == acc[i].getAccountNo()){
-                                found = true;
-
-                                System.out.print("Enter Pin \t\t: ");
-                                if(acc[i].verify(input.nextInt())){
-                                    do { 
-                                        clearScreen();
-                                        JCASH();
-                                        System.out.println("Welcome " + acc[i].getName().toUpperCase() + "!");
-                                        System.out.println("1. Deposit\n2. Withdraw\n3. View Balance\n4. Currency Converter\n5. Account Details\n6. Exit\n");
-                                        System.out.print("Enter choice: ");
-                                        choice2 = input.nextInt();
-                                        clearScreen();  
-
-                                        switch(choice2){
-                                            case 1:
+                        else if (AccountLogin(accNo)) {
+                            System.out.print("Enter Pin \t\t: ");
+                            int pin = input.nextInt();
+                            input.nextLine(); // consume the newline character
+        
+                            if (PinLogin(pin)) {
+                                for (int i = 0; i < count; i++) {
+                                    if (Integer.parseInt(accNo) == acc[i].getAccountNo()) {
+                                        found = true;
+        
+                                        do {
                                             clearScreen();
                                             JCASH();
-                                            System.out.println("DEPOSIT");
-                                            System.out.print("Enter Deposit Amount \t: PHP ");
-                                            acc[i].deposit(input.nextInt());//calls the deposit method
-                                            input.nextLine();
-                                            saveAccounts(acc, count);
-                                            System.out.print("\nPress Enter to Continue...");
-                                            input.nextLine();
-                                            break;
-                                            case 2:
+                                            System.out.println("Welcome " + acc[i].getName().toUpperCase() + "!");
+                                            System.out.println("1. Deposit\n2. Withdraw\n3. View Balance\n4. Currency Converter\n5. Account Details\n6. Exit\n");
+                                            System.out.print("Enter choice: ");
+                                            choice2 = input.nextInt();
                                             clearScreen();
-                                            JCASH();
-                                            System.out.println("WITHDRAW");
-                                            System.out.print("Enter Withdrawal Amount : PHP ");
-                                            if(acc[i].withdraw(input.nextInt())){//calls the withdraw method, if it returns true, withdrawal is successful
-                                                clearScreen();
-                                                System.out.println("Account Number \t: " + acc[i].getAccountNo());
-                                                System.out.printf("Withdrawal successful! \nNew balance \t: PHP%, .2f%n", (double) acc[i].getBalance());
-                                                input.nextLine();
-                                                saveAccounts(acc, count);
-                                                System.out.print("\nPress Enter to Continue...");
-                                                input.nextLine();
+        
+                                            switch (choice2) {
+                                                case 1:
+                                                    clearScreen();
+                                                    JCASH();
+                                                    System.out.println("DEPOSIT");
+                                                    System.out.print("Enter Deposit Amount \t: PHP ");
+                                                    acc[i].deposit(input.nextInt()); // calls the deposit method
+                                                    input.nextLine();
+                                                    saveAccounts(acc, count);
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                    break;
+                                                case 2:
+                                                    clearScreen();
+                                                    JCASH();
+                                                    System.out.println("WITHDRAW");
+                                                    System.out.print("Enter Withdrawal Amount : PHP ");
+                                                    if (acc[i].withdraw(input.nextInt())) {
+                                                        saveAccounts(acc, count);
+                                                        System.out.println("Withdrawal successful!");
+                                                    } else {
+                                                        System.out.println("Withdrawal failed.");
+                                                    }
+                                                    input.nextLine();
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                    break;
+                                                case 3:
+                                                    JCASH();
+                                                    acc[i].viewBalance(); // calls the viewBalance method
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                    input.nextLine();
+                                                    break;
+                                                case 4:
+                                                    clearScreen();
+                                                    JCASH();
+                                                    currencyConvert(acc[i].getBalance()); // calls the currencyConvert method
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                    input.nextLine();
+                                                    break;
+                                                case 5: // displays the account details
+                                                    clearScreen();
+                                                    JCASH();
+                                                    AccountDetails();// calls the getDetails method
+                                                    System.out.print("\nPress Enter to Continue...");
+                                                    input.nextLine();
+                                                    input.nextLine();
+                                                    break;
+                                                case 6:
+                                                    break;
+        
+                                                default:
+                                                    System.out.println("Invalid choice.");
+                                                    input.nextLine();
+                                                    System.out.print("Press Enter to Continue...");
+                                                    input.nextLine();
                                             }
-                                            else{//if the withdrawal is not successful
-                                                System.out.println("Withdrawal failed.");
-                                                input.nextLine();
-                                                System.out.print("\nPress Enter to Continue...");
-                                                input.nextLine();
-                                            }
-                                            break;
-                                            case 3:
-                                            
-                                            JCASH();
-                                            acc[i].viewBalance();//calls the viewBalance method
-                                            System.out.print("\nPress Enter to Continue...");
-                                            input.nextLine();
-                                            input.nextLine();
-                                            break;
-                                            case 4:
-                                            clearScreen();
-                                            JCASH();
-                                            currencyConvert(acc[i].getBalance());//calls the currencyConvert method
-                                            System.out.print("\nPress Enter to Continue...");
-                                            input.nextLine();
-                                            input.nextLine();
-                                            break;
-                                            case 5://displays the account details
-                                            clearScreen();
-                                            JCASH();
-                                            acc[i].getDetails();//calls the getDetails method
-                                            System.out.print("\nPress Enter to Continue...");
-                                            input.nextLine();
-                                            input.nextLine();
-                                            break;
-                                            case 6:
-                                                break;
-                                            
-                                            default:
-                                                System.out.println("Invalid choice.");
-                                                input.nextLine();
-                                                System.out.print("Press Enter to Continue...");
-                                                input.nextLine();
-                                        }
-                                    } while (choice2 != 6);
-                                    break;
+                                        } while (choice2 != 6);
+                                        break;
+                                    }
                                 }
-                                else{
-                                    System.out.println("\nAll attempts used. Going back to main menu.");
+                            }
+                        
+                        else {
+                                    System.out.println("\nFailed to login. Going back to main menu.");
                                     input.nextLine();
                                     System.out.print("Press Enter to Continue...");
                                     input.nextLine();
                                     break;
                                 }
-                            }
-                        }
-                    }
-                    if(!found){
+                            
+                        
+                    } else {
                         System.out.println("\nAccount not found.");
                         System.out.print("Press Enter to Continue...");
                         input.nextLine();
                     }
                     break;
-
+    
                 case 2:
                     System.out.print("Are you sure you want to exit? Y|N: ");
                     finalans = input.nextLine();
                     break;
-
+    
                 default:
                     System.out.println("Invalid choice.");
                     System.out.print("Press Enter to Continue...");
                     input.nextLine();
             }
-        }while(!finalans.equalsIgnoreCase("Y"));
+        } while (!finalans.equalsIgnoreCase("Y"));
+    
         input.close();
         clearScreen();
         JCASH();
@@ -337,15 +321,36 @@ public class Fmain {
         System.out.print("Set Pin \t\t: ");
         account.setPin(input.nextInt());
     }
-
-    public static void Display(Accounts[] acc, int count){//displays the accounts
-        for(int i = 0; i < count; i++){
-            System.out.println("Account Number\t: " + acc[i].getAccountNo());
-            System.out.println("Account Type\t: " + acc[i].getClass().getSimpleName().toUpperCase());
-            System.out.println();
+    public static void AccountDetails(){
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                System.out.println("\nAccount Number: " + details[1]);
+                System.out.println("Account Type: " + details[0]);
+                System.out.println("Name: " + details[2]);
+                System.out.println("Address: " + details[3]);
+                System.out.println("Age: " + (2024 - Integer.parseInt(details[4])));
+                System.out.println();
+            }
+        } catch (IOException e) {
+            
         }
     }
 
+    public static void Display(){//displays the accounts
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                System.out.println("\nAccount Number: " + details[1]);
+                System.out.println("Account Type: " + details[0]);
+                System.out.println();
+            }
+        } catch (IOException e) {
+            
+        }
+    }
     public static void authors(){//mga pogi
         System.out.println("Thank you for using J-CASH Banking.");
         System.out.println("Have a Nice Day!\n");
@@ -355,7 +360,6 @@ public class Fmain {
         System.out.println("Mark Gamboa");
         System.out.println("Ronn Rosarito\n");
     }
-
     public static void currencyConvert(int php){//converts PHP to other currencies
         System.out.printf("Your current balance is PHP%, .2f%n",(double) php);
         System.out.printf("Converted Balance:\n");
@@ -429,5 +433,75 @@ public class Fmain {
             e.printStackTrace();
         }
         return count;
+    }
+    public static boolean AccountLogin(String accNo) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (details[1].equals(accNo)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            
+        }
+        return false;
+    }
+    public static boolean PinLogin(int pin) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("accounts.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] details = line.split(",");
+                if (Integer.parseInt(details[6]) == pin) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            
+        }
+        return false;
+    }
+    public static boolean DeleteAccount(String accNo) {
+    boolean accountDeleted = false;
+    File inputFile = new File("accounts.txt");
+    File tempFile = new File("accounts_temp.txt");
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+         BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] details = line.split(",");
+            if (!details[1].equals(accNo)) {
+                writer.write(line);
+                writer.newLine();
+            } else {
+                accountDeleted = true;
+            }
+        }
+    } catch (IOException e) {
+        System.out.println("An error occurred while deleting the account.");
+        e.printStackTrace();
+    }
+
+    // Replace the original file with the updated file
+    if (accountDeleted) {
+        if (!inputFile.delete()) {
+            System.out.println("Could not delete original file");
+            return false;
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            System.out.println("Could not rename temp file");
+            return false;
+        }
+    } else {
+        tempFile.delete();
+    }
+
+    return accountDeleted;
+}
+    
+    public static boolean Login(String accNo) {
+        return accNo.equalsIgnoreCase("admin");
     }
 }

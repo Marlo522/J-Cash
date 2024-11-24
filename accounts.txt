@@ -1,0 +1,4 @@
+Savings,535,Ronn,Manila,19,1000000,1234
+Current,995,Marlo,Navotas,20,5000,1234
+Savings,851,Dominic,Makati,19,5000,1234
+Savings,516,Elmer,Lucban,19,4000,1234

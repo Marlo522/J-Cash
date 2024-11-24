@@ -50,6 +50,7 @@ public class Hmain {
                                             clearScreen();
                                             JCASH();
                                             System.out.println("Maximum number of accounts reached.");
+                                            input.nextLine();
                                             System.out.print("Press Enter to Continue...");
                                             input.nextLine(); // waits for the user to press enter
                                             break;
@@ -219,8 +220,9 @@ public class Hmain {
                                                 case 5: // displays the account details
                                                     clearScreen();
                                                     JCASH();
-                                                    AccountDetails();// calls the getDetails method
-                                                    System.out.print("\nPress Enter to Continue...");
+                                                    System.out.println("ACCOUNT DETAILS");
+                                                    AccountDetails(accNo);// calls the getDetails method
+                                                    System.out.print("Press Enter to Continue...");
                                                     input.nextLine();
                                                     input.nextLine();
                                                     break;
@@ -321,20 +323,23 @@ public class Hmain {
         System.out.print("Set Pin \t\t: ");
         account.setPin(input.nextInt());
     }
-    public static void AccountDetails(){
+    public static void AccountDetails(String accNo) {
         try (BufferedReader reader = new BufferedReader(new FileReader("accounts.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] details = line.split(",");
-                System.out.println("\nAccount Number: " + details[1]);
-                System.out.println("Account Type: " + details[0]);
-                System.out.println("Name: " + details[2]);
-                System.out.println("Address: " + details[3]);
-                System.out.println("Age: " + (2024 - Integer.parseInt(details[4])));
-                System.out.println();
+                if (details[1].equals(accNo)) {
+                    System.out.println("Account Number\t: " + details[1]);
+                    System.out.println("Account Type\t: " + details[0]);
+                    System.out.println("Name\t\t: " + details[2]);
+                    System.out.println("Address\t\t: " + details[3]);
+                    System.out.println("Age\t\t: " + (2024 - Integer.parseInt(details[4])));
+                    System.out.println();
+                    break; // Exit the loop once the account is found
+                }
             }
         } catch (IOException e) {
-            
+            e.printStackTrace();
         }
     }
 
@@ -345,7 +350,6 @@ public class Hmain {
                 String[] details = line.split(",");
                 System.out.println("\nAccount Number: " + details[1]);
                 System.out.println("Account Type: " + details[0]);
-                System.out.println();
             }
         } catch (IOException e) {
             
